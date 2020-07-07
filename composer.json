@@ -1,0 +1,29 @@
+{
+  "name": "bolt/users",
+  "description": "Bolt 4 users extesion",
+  "type": "bolt-extension",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Ivo Valchev",
+      "email": "me@ivovalchev.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.1.3",
+    "twig/twig": "^2.12 | ^3.0"
+  },
+  "require-dev": {
+    "bolt/core": "^4.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Bolt\\UsersExtension\\": "src/"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "extra": {
+    "entrypoint": "Bolt\\UsersExtension\\Extension"
+  }
+}
