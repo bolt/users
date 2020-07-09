@@ -41,8 +41,8 @@ class LoginFormExtension extends AbstractExtension
             new TwigFunction('login_form', [$this, 'getLoginForm'], $safe),
             new TwigFunction('login_form_username', [$this, 'getUsernameField'], $safe),
             new TwigFunction('login_form_password', [$this, 'getPasswordField'], $safe),
-            new TwigFunction('registration_form_csrf', [$this, 'getCsrfField'], $safe),
-            new TwigFunction('registration_form_submit', [$this, 'getSubmitButton'], $safe),
+            new TwigFunction('login_form_csrf', [$this, 'getCsrfField'], $safe),
+            new TwigFunction('login_form_submit', [$this, 'getSubmitButton'], $safe),
         ];
     }
 

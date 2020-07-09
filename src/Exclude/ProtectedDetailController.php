@@ -6,12 +6,13 @@ namespace Bolt\UsersExtension\Exclude;
 
 use Bolt\Configuration\Config;
 use Bolt\Configuration\Content\ContentType;
+use Bolt\Controller\DetailControllerInterface;
 use Bolt\Controller\Frontend\DetailController;
 use Bolt\UsersExtension\Controller\AccessAwareController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ProtectedDetailController extends AccessAwareController
+class ProtectedDetailController extends AccessAwareController implements DetailControllerInterface
 {
     /** @var DetailController */
     private $detailController;
@@ -42,11 +43,16 @@ class ProtectedDetailController extends AccessAwareController
     public function record($slugOrId, ?string $contentTypeSlug = null, bool $requirePublished = true): Response
     {
         $contentType = ContentType::factory($contentTypeSlug, $this->config->get('contenttypes'));
-
-        if ($contentType->contains('allow_for_groups')) {
-            $this->denyAccessUnlessGranted($contentType->get('allow_for_groups'));
-        }
+        $this->applyAllowForGroupsGuard($contentType);
 
         return $this->detailController->record($slugOrId, $contentTypeSlug, $requirePublished);
+    }
+
+    public function contentByFieldValue(string $contentTypeSlug, string $field, string $value): Response
+    {
+        $contentType = ContentType::factory($contentTypeSlug, $this->config->get('contenttypes'));
+        $this->applyAllowForGroupsGuard($contentType);
+
+        return $this->detailController->contentByFieldValue($contentTypeSlug, $field, $value);
     }
 }

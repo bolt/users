@@ -40,10 +40,7 @@ class ProtectedListingController extends AccessAwareController
     public function listing(ContentRepository $contentRepository, string $contentTypeSlug): Response
     {
         $contentType = ContentType::factory($contentTypeSlug, $this->config->get('contenttypes'));
-
-        if ($contentType->contains('allow_for_groups')) {
-            $this->denyAccessUnlessGranted($contentType->get('allow_for_groups'));
-        }
+        $this->applyAllowForGroupsGuard($contentType);
 
         return $this->listingController->listing($contentRepository, $contentTypeSlug);
     }
