@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Bolt\UsersExtension\Twig;
 
-use Bolt\UsersExtension\Extension;
 use Bolt\UsersExtension\Utils\ExtensionUtils;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
@@ -13,7 +12,7 @@ use Twig\TwigFunction;
 
 class LoginFormExtension extends AbstractExtension
 {
-    /**@var UrlGeneratorInterface */
+    /** @var UrlGeneratorInterface */
     private $router;
 
     /** @var CsrfTokenManagerInterface */
@@ -22,15 +21,11 @@ class LoginFormExtension extends AbstractExtension
     /** @var ExtensionUtils */
     private $utils;
 
-    /** @var Extension */
-    private $extension;
-
-    public function __construct(UrlGeneratorInterface $router, CsrfTokenManagerInterface $csrfTokenManager, ExtensionUtils $utils, Extension $extension)
+    public function __construct(UrlGeneratorInterface $router, CsrfTokenManagerInterface $csrfTokenManager, ExtensionUtils $utils)
     {
         $this->router = $router;
         $this->csrfTokenManager = $csrfTokenManager;
         $this->utils = $utils;
-        $this->extension = $extension;
     }
 
     /**
@@ -65,34 +60,37 @@ class LoginFormExtension extends AbstractExtension
 
     public function getUsernameField(bool $withLabel, array $labels): string
     {
-        $text = in_array('username', $labels) ? $labels['username'] : 'Username';
+        $text = in_array('username', $labels, true) ? $labels['username'] : 'Username';
         $label = $withLabel ? sprintf('<label for="username">%s</label>', $text) : '';
 
         $input = '<input type="text" id="username" name="username">';
+
         return $label . $input;
     }
 
     public function getPasswordField(bool $withLabel, array $labels): string
     {
-        $text = in_array('password', $labels) ? $labels['password'] : 'Password';
+        $text = in_array('password', $labels, true) ? $labels['password'] : 'Password';
         $label = $withLabel ? sprintf('<label for="password">%s</label>', $text) : '';
 
         $input = '<input type="password" id="password" name="password">';
+
         return $label . $input;
     }
 
     public function getEmailField(bool $withLabel, array $labels): string
     {
-        $text = in_array('email', $labels) ? $labels['email'] : 'Email';
+        $text = in_array('email', $labels, true) ? $labels['email'] : 'Email';
         $label = $withLabel ? sprintf('<label for="email">%s</label>', $text) : '';
 
         $input = '<input type="email" id="email" name="email">';
+
         return $label . $input;
     }
 
     public function getSubmitButton(array $labels = []): string
     {
-        $text = in_array('submit', $labels) ? $labels['submit']: 'Submit';
+        $text = in_array('submit', $labels, true) ? $labels['submit'] : 'Submit';
 
         return sprintf('<input type="submit" value="%s">', $text);
     }
@@ -104,10 +102,11 @@ class LoginFormExtension extends AbstractExtension
         return sprintf('<input type="hidden" name="_csrf_token" value="%s">', $token);
     }
 
-    public function getRedirectField(string $pathOrUrl = null): string
+    public function getRedirectField(?string $pathOrUrl = null): string
     {
         if ($pathOrUrl === null) {
-            $pathOrUrl = '/'; // @todo: Get the path from the config
+            // @todo: Get the path from the config
+            $pathOrUrl = '/';
         }
 
         if ($this->utils->isRoute($pathOrUrl)) {

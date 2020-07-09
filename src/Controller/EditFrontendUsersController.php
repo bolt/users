@@ -17,7 +17,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
@@ -28,9 +27,6 @@ class EditFrontendUsersController extends ExtensionController
 {
     use CsrfTrait;
 
-    /** @var UrlGeneratorInterface */
-    private $urlGenerator;
-
     /** @var EntityManagerInterface */
     private $em;
 
@@ -40,27 +36,21 @@ class EditFrontendUsersController extends ExtensionController
     /** @var array */
     private $forbiddenRoles = ['ROLE_ADMIN', 'ROLE_EDITOR'];
 
-    /**@var Extension */
-    private $extension;
-
     /** @var Request */
     private $request;
 
     public function __construct(
-        UrlGeneratorInterface $urlGenerator,
         EntityManagerInterface $em,
         UserPasswordEncoderInterface $passwordEncoder,
         CsrfTokenManagerInterface $csrfTokenManager,
-        Extension $extension,
         Config $config,
         RequestStack $requestStack
     ) {
         parent::__construct($config);
-        $this->urlGenerator = $urlGenerator;
+
         $this->em = $em;
         $this->passwordEncoder = $passwordEncoder;
         $this->csrfTokenManager = $csrfTokenManager;
-        $this->extension = $extension;
         $this->request = $requestStack->getCurrentRequest();
     }
 
@@ -75,6 +65,7 @@ class EditFrontendUsersController extends ExtensionController
             $this->validateCsrf('edit_frontend_user');
         } catch (InvalidCsrfTokenException $e) {
             $this->request->getSession()->getFlashBag()->add('error', 'Invalid CSRF token');
+
             return $this->redirect($referer);
         }
 
@@ -83,7 +74,7 @@ class EditFrontendUsersController extends ExtensionController
         $user->setDisplayName($this->request->get('displayname', $user->getUsername()));
 
         $role = $this->request->get('group');
-        if (in_array($role, $this->forbiddenRoles)) {
+        if (in_array($role, $this->forbiddenRoles, true)) {
             $role = 'ROLE_USER';
         }
 
@@ -95,6 +86,7 @@ class EditFrontendUsersController extends ExtensionController
 
         if (! UserStatus::isValid($activationType)) {
             $this->addFlash('danger', sprintf('Incorrect user activationt type (%s)', $activationType));
+
             return $this->redirect($referer);
         }
 
@@ -134,7 +126,7 @@ class EditFrontendUsersController extends ExtensionController
     {
         try {
             $this->generateUrl($route, $params);
-        } catch(RouteNotFoundException $e) {
+        } catch (RouteNotFoundException $e) {
             return false;
         }
 
@@ -145,12 +137,12 @@ class EditFrontendUsersController extends ExtensionController
     {
         $groups = $this->getConfig()->get('groups', []);
 
-        if (in_array($group, $groups) && in_array($config, $groups[$group])) {
+        if (in_array($group, $groups, true) && in_array($config, $groups[$group], true)) {
             return $groups[$group][$config];
         }
 
         $default = $this->getConfig()->get('default', []);
-        if (in_array($config, array_keys($default))) {
+        if (in_array($config, array_keys($default), true)) {
             return $default[$config];
         }
 

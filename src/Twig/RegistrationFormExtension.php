@@ -11,7 +11,7 @@ use Twig\TwigFunction;
 
 class RegistrationFormExtension extends AbstractExtension
 {
-    /**@var UrlGeneratorInterface */
+    /** @var UrlGeneratorInterface */
     private $router;
 
     /** @var CsrfTokenManagerInterface */
@@ -58,28 +58,31 @@ class RegistrationFormExtension extends AbstractExtension
 
     public function getUsernameField(bool $withLabel, array $labels): string
     {
-        $text = in_array('username', $labels) ? $labels['username'] : 'Username';
+        $text = in_array('username', $labels, true) ? $labels['username'] : 'Username';
         $label = $withLabel ? sprintf('<label for="username">%s</label>', $text) : '';
 
         $input = '<input type="text" id="username" name="username">';
+
         return $label . $input;
     }
 
     public function getPasswordField(bool $withLabel, array $labels): string
     {
-        $text = in_array('password', $labels) ? $labels['password'] : 'Password';
+        $text = in_array('password', $labels, true) ? $labels['password'] : 'Password';
         $label = $withLabel ? sprintf('<label for="password">%s</label>', $text) : '';
 
         $input = '<input type="password" id="password" name="password">';
+
         return $label . $input;
     }
 
     public function getEmailField(bool $withLabel, array $labels): string
     {
-        $text = in_array('email', $labels) ? $labels['email'] : 'Email';
+        $text = in_array('email', $labels, true) ? $labels['email'] : 'Email';
         $label = $withLabel ? sprintf('<label for="email">%s</label>', $text) : '';
 
         $input = '<input type="email" id="email" name="email">';
+
         return $label . $input;
     }
 
@@ -90,7 +93,7 @@ class RegistrationFormExtension extends AbstractExtension
 
     public function getSubmitButton(array $labels = []): string
     {
-        $text = in_array('submit', $labels) ? $labels['submit']: 'Submit';
+        $text = in_array('submit', $labels, true) ? $labels['submit'] : 'Submit';
 
         return sprintf('<input type="submit" value="%s">', $text);
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bolt\UsersExtension\Utils;
 
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
@@ -19,7 +21,7 @@ class ExtensionUtils
     {
         try {
             $this->generator->generate($route, $params);
-        } catch(RouteNotFoundException $e) {
+        } catch (RouteNotFoundException $e) {
             return false;
         }
 
