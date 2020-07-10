@@ -8,9 +8,12 @@ use Bolt\Configuration\Config;
 use Bolt\Controller\CsrfTrait;
 use Bolt\Entity\User;
 use Bolt\Extension\ExtensionController;
+use Bolt\Extension\ExtensionRegistry;
 use Bolt\Repository\UserRepository;
 use Bolt\UsersExtension\Enum\UserStatus;
 use Bolt\UsersExtension\Extension;
+use Bolt\UsersExtension\ExtensionConfigInterface;
+use Bolt\UsersExtension\ExtensionConfigTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -23,8 +26,9 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class EditFrontendUsersController extends ExtensionController
+class RegisterFrontendUsersController extends ExtensionController implements ExtensionConfigInterface
 {
+    use ExtensionConfigTrait;
     use CsrfTrait;
 
     /** @var EntityManagerInterface */
@@ -39,12 +43,16 @@ class EditFrontendUsersController extends ExtensionController
     /** @var Request */
     private $request;
 
+    /** @var ExtensionRegistry */
+    private $registry;
+
     public function __construct(
         EntityManagerInterface $em,
         UserPasswordEncoderInterface $passwordEncoder,
         CsrfTokenManagerInterface $csrfTokenManager,
         Config $config,
-        RequestStack $requestStack
+        RequestStack $requestStack,
+        ExtensionRegistry $registry
     ) {
         parent::__construct($config);
 
@@ -52,10 +60,11 @@ class EditFrontendUsersController extends ExtensionController
         $this->passwordEncoder = $passwordEncoder;
         $this->csrfTokenManager = $csrfTokenManager;
         $this->request = $requestStack->getCurrentRequest();
+        $this->registry = $registry;
     }
 
     /**
-     * @Route("/register", methods={"POST"}, name="extension_edit_frontend_user", requirements={"id": "\d+"})
+     * @Route("/register", methods={"POST"}, name="extension_edit_frontend_user")
      */
     public function save(?User $user, ValidatorInterface $validator): Response
     {
@@ -82,7 +91,7 @@ class EditFrontendUsersController extends ExtensionController
         $user->setPlainPassword($plainPassword);
         $user->setRoles([$role]);
 
-        $activationType = $this->getExtConfig('activation_type', $role, UserStatus::ADMIN_CONFIRMATION);
+        $activationType = $this->getExtension()->getExtConfig('activation_type', $role, UserStatus::ADMIN_CONFIRMATION);
 
         if (! UserStatus::isValid($activationType)) {
             $this->addFlash('danger', sprintf('Incorrect user activationt type (%s)', $activationType));
@@ -113,7 +122,7 @@ class EditFrontendUsersController extends ExtensionController
 
         $this->addFlash('success', 'user.updated_profile');
 
-        $routeOrUrl = (string) $this->getExtConfig('redirect_on_register', $role, 'homepage');
+        $routeOrUrl = (string) $this->getExtension()->getExtConfig('redirect_on_register', $role, 'homepage');
 
         if ($this->isRoute($routeOrUrl)) {
             return $this->redirectToRoute($routeOrUrl);
@@ -131,21 +140,5 @@ class EditFrontendUsersController extends ExtensionController
         }
 
         return true;
-    }
-
-    public function getExtConfig(string $config, string $group, $fallback = null)
-    {
-        $groups = $this->getConfig()->get('groups', []);
-
-        if (in_array($group, $groups, true) && in_array($config, $groups[$group], true)) {
-            return $groups[$group][$config];
-        }
-
-        $default = $this->getConfig()->get('default', []);
-        if (in_array($config, array_keys($default), true)) {
-            return $default[$config];
-        }
-
-        return $fallback;
     }
 }

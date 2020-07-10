@@ -6,24 +6,27 @@ namespace Bolt\UsersExtension\Exclude;
 
 use Bolt\Configuration\Config;
 use Bolt\Configuration\Content\ContentType;
-use Bolt\Controller\DetailControllerInterface;
 use Bolt\Controller\Frontend\DetailController;
+use Bolt\Controller\Frontend\DetailControllerInterface;
+use Bolt\Extension\ExtensionRegistry;
 use Bolt\UsersExtension\Controller\AccessAwareController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ProtectedDetailController extends AccessAwareController implements DetailControllerInterface
 {
-    /** @var DetailController */
-    private $detailController;
-
     /** @var Config */
     private $config;
 
-    public function __construct(DetailController $detailController, Config $config)
+    /** @var DetailController */
+    private $detailController;
+
+    public function __construct(DetailController $detailController, Config $config, ExtensionRegistry $registry)
     {
-        $this->detailController = $detailController;
+        parent::__construct($config, $registry);
+
         $this->config = $config;
+        $this->detailController = $detailController;
     }
 
     /**
