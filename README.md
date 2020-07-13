@@ -43,7 +43,7 @@ To limit a a ContentType to a specific group of users, say `members`, do the fol
 groups:
   members:
     redirect_on_register: homepage # Provide either a route name, or a URL
-    redirect_on_login: / # Provide iether a route name, or a URL
+    redirect_on_login: / # Provide either a route name, or a URL
     activation_type: enabled # Once a user registers, he/she is automatically allowed to login
 ```
 
