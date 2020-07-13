@@ -33,6 +33,14 @@ Then, add the following to your `config/services.yaml` file:
         tags: ['controller.service_arguments']
 ```
 
+Finally, add this to `config/routes.yaml`:
+
+```yaml
+users_extension_controllers:
+    resource: '../../vendor/bolt/users/src/'
+    type: annotation
+```
+
 ## Basic usage
 
 To limit a a ContentType to a specific group of users, say `ROLE_MEMBER`, do the following:
@@ -128,14 +136,6 @@ groups:
     redirect_on_login: /
     initial_status: enabled
     contenttype: members # Link the 'members' ContentType to the 'members' group.
-```
-
-Finally, add this to `config/routes.yaml`:
-
-```yaml
-users_extension_controllers:
-    resource: '../../vendor/bolt/users/src/'
-    type: annotation
 ```
 
 Now, users belonging to the `members` group will be able to access their profile
