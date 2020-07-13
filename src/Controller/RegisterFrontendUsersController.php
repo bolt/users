@@ -91,10 +91,10 @@ class RegisterFrontendUsersController extends ExtensionController implements Ext
         $user->setPlainPassword($plainPassword);
         $user->setRoles([$role]);
 
-        $activationType = $this->getExtension()->getExtConfig('activation_type', $role, UserStatus::ADMIN_CONFIRMATION);
+        $activationType = $this->getExtension()->getExtConfig('initial_status', $role, UserStatus::ADMIN_CONFIRMATION);
 
         if (! UserStatus::isValid($activationType)) {
-            $this->addFlash('danger', sprintf('Incorrect user activationt type (%s)', $activationType));
+            $this->addFlash('danger', sprintf('Incorrect user initial status (%s)', $activationType));
 
             return $this->redirect($referer);
         }

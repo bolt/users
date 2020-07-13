@@ -35,16 +35,16 @@ Then, add the following to your `config/services.yaml` file:
 
 ## Basic usage
 
-To limit a a ContentType to a specific group of users, say `members`, do the following:
+To limit a a ContentType to a specific group of users, say `ROLE_MEMBER`, do the following:
 
 1. Define your user group in `config/extensions/bolt-usersextension.yaml`:
 
 ```yaml
 groups:
-  members:
+  ROLE_MEMBER:
     redirect_on_register: homepage # Provide either a route name, or a URL
     redirect_on_login: / # Provide either a route name, or a URL
-    activation_type: enabled # Once a user registers, he/she is automatically allowed to login
+    initial_status: enabled # Once a user registers, he/she is automatically allowed to login
 ```
 
 2. Limit the access to a certain ContentType, e.g. `entries` to that user group in
@@ -56,7 +56,7 @@ entries:
     singular_name: Entry
     fields:
         # ... normal ContentType definition
-    allow_for_groups: [ 'members', 'ROLE_ADMIN' ]
+    allow_for_groups: [ 'ROLE_MEMBER', 'ROLE_ADMIN' ]
 ```
 
 Note: The `allow_for_groups` option is used to limit access to ContentType (listing
@@ -71,7 +71,7 @@ The extension allows you to include a registration form on any twig template.
 To add a registration form, just add the following to your twig file:
 
 ```twig
-    {{ registration_form(group='members') }}
+    {{ registration_form(group='ROLE_MEMBER') }}
 ```
 
 This line below will render a registration form with username, password and email
@@ -122,10 +122,10 @@ Then, edit the extension config in `config/bolt-usersextension.yaml`:
 
 ```yaml
 groups:
-  members:
+  ROLE_MEMBER:
     redirect_on_register: homepage
     redirect_on_login: /
-    activation_type: enabled
+    initial_status: enabled
     contenttype: members # Link the 'members' ContentType to the 'members' group.
 ```
 
@@ -138,10 +138,10 @@ the following to the config:
 
 ```yaml
 groups:
-  members:
+  ROLE_MEMBER:
     redirect_on_register: homepage
     redirect_on_login: /
-    activation_type: enabled
+    initial_status: enabled
     contenttype: members
     allow_profile_edit: true # If true, members will be able to edit their profiels on /profile/edit . You must specify the edit template below
     profile_edit_template: 'edit_profile.twig'
