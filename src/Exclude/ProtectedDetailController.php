@@ -8,7 +8,6 @@ use Bolt\Configuration\Config;
 use Bolt\Configuration\Content\ContentType;
 use Bolt\Controller\Frontend\DetailController;
 use Bolt\Controller\Frontend\DetailControllerInterface;
-use Bolt\Extension\ExtensionRegistry;
 use Bolt\UsersExtension\Controller\AccessAwareController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,9 +20,9 @@ class ProtectedDetailController extends AccessAwareController implements DetailC
     /** @var DetailController */
     private $detailController;
 
-    public function __construct(DetailController $detailController, Config $config, ExtensionRegistry $registry)
+    public function __construct(DetailController $detailController, Config $config)
     {
-        parent::__construct($config, $registry);
+        parent::__construct($config);
 
         $this->config = $config;
         $this->detailController = $detailController;

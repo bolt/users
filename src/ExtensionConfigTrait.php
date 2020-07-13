@@ -13,7 +13,7 @@ trait ExtensionConfigTrait
 
     public function getExtension(): Extension
     {
-        /** @var Extension $extension */
+        /* @phpstan-ignore-next-line */
         return $this->registry->getExtension(Extension::class);
     }
 

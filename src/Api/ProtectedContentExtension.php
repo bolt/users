@@ -29,7 +29,7 @@ final class ProtectedContentExtension implements QueryCollectionExtensionInterfa
 
         $this->protectedContentTypes = [];
 
-        foreach($cts as $ct) {
+        foreach ($cts as $ct) {
             try {
                 $accessAwareController->applyAllowForGroupsGuard($ct);
             } catch (AccessDeniedHttpException $e) {

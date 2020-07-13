@@ -7,7 +7,6 @@ namespace Bolt\UsersExtension\Exclude;
 use Bolt\Configuration\Config;
 use Bolt\Configuration\Content\ContentType;
 use Bolt\Controller\Frontend\ListingController;
-use Bolt\Extension\ExtensionRegistry;
 use Bolt\Repository\ContentRepository;
 use Bolt\UsersExtension\Controller\AccessAwareController;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,9 +20,9 @@ class ProtectedListingController extends AccessAwareController
     /** @var Config */
     private $config;
 
-    public function __construct(ListingController $listingController, Config $config, ExtensionRegistry $registry)
+    public function __construct(ListingController $listingController, Config $config)
     {
-        parent::__construct($config, $registry);
+        parent::__construct($config);
 
         $this->listingController = $listingController;
         $this->config = $config;

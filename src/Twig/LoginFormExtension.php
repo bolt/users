@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Bolt\UsersExtension\Twig;
 
-use Bolt\Extension\ExtensionRegistry;
 use Bolt\UsersExtension\ExtensionConfigInterface;
 use Bolt\UsersExtension\ExtensionConfigTrait;
 use Bolt\UsersExtension\Utils\ExtensionUtils;
@@ -26,15 +25,11 @@ class LoginFormExtension extends AbstractExtension implements ExtensionConfigInt
     /** @var ExtensionUtils */
     private $utils;
 
-    /** @var ExtensionRegistry */
-    private $registry;
-
-    public function __construct(UrlGeneratorInterface $router, CsrfTokenManagerInterface $csrfTokenManager, ExtensionUtils $utils, ExtensionRegistry $registry)
+    public function __construct(UrlGeneratorInterface $router, CsrfTokenManagerInterface $csrfTokenManager, ExtensionUtils $utils)
     {
         $this->router = $router;
         $this->csrfTokenManager = $csrfTokenManager;
         $this->utils = $utils;
-        $this->registry = $registry;
     }
 
     /**
@@ -113,7 +108,7 @@ class LoginFormExtension extends AbstractExtension implements ExtensionConfigInt
 
     public function getRedirectField(string $group = '', string $pathOrUrl = ''): string
     {
-        if ($pathOrUrl === null) {
+        if (empty($pathOrUrl)) {
             $pathOrUrl = $this->getExtension()->getExtConfig('redirect_on_login', $group, '/');
         }
 

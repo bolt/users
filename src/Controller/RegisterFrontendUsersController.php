@@ -8,7 +8,6 @@ use Bolt\Configuration\Config;
 use Bolt\Controller\CsrfTrait;
 use Bolt\Entity\User;
 use Bolt\Extension\ExtensionController;
-use Bolt\Extension\ExtensionRegistry;
 use Bolt\Repository\UserRepository;
 use Bolt\UsersExtension\Enum\UserStatus;
 use Bolt\UsersExtension\Extension;
@@ -56,7 +55,6 @@ class RegisterFrontendUsersController extends ExtensionController implements Ext
         $this->passwordEncoder = $passwordEncoder;
         $this->csrfTokenManager = $csrfTokenManager;
         $this->request = $requestStack->getCurrentRequest();
-        $this->registry = $registry;
     }
 
     /**
@@ -69,6 +67,7 @@ class RegisterFrontendUsersController extends ExtensionController implements Ext
         try {
             $this->validateCsrf('edit_frontend_user');
         } catch (InvalidCsrfTokenException $e) {
+            /* @phpstan-ignore-next-line */
             $this->request->getSession()->getFlashBag()->add('error', 'Invalid CSRF token');
 
             return $this->redirect($referer);

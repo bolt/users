@@ -12,7 +12,6 @@ use Bolt\Entity\Content;
 use Bolt\Entity\User;
 use Bolt\Enum\Statuses;
 use Bolt\Event\Listener\ContentFillListener;
-use Bolt\Extension\ExtensionRegistry;
 use Bolt\Repository\ContentRepository;
 use Bolt\UsersExtension\ExtensionConfigTrait;
 use Bolt\UsersExtension\Utils\ExtensionTemplateChooser;
@@ -45,10 +44,9 @@ class FrontendUsersProfileController extends AccessAwareController
         ContentFillListener $contentFillListener,
         TwigAwareController $twigAwareController,
         ContentEditController $contentEditController,
-        ExtensionTemplateChooser $templateChooser,
-        ExtensionRegistry $registry
-    ) {
-        parent::__construct($config, $registry);
+        ExtensionTemplateChooser $templateChooser)
+    {
+        parent::__construct($config);
 
         $this->contentRepository = $contentRepository;
         $this->contentFillListener = $contentFillListener;
