@@ -116,6 +116,7 @@ members:
     fields:
       dob:
         type: date
+    viewless: true
 ```
 
 Then, edit the extension config in `config/bolt-usersextension.yaml`:
