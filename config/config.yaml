@@ -1,0 +1,17 @@
+## Bolt Users Extensions Configuration
+
+## The default config is used if a setting is missing
+## for the relevant group. E.g., initial_status: enabled
+## will be used for the ROLE_MEMBER group.
+default:
+  redirect_on_register: / # Provide either a route name, or a URL
+  initial_status: enabled # email_confirmation, admin_confirmation
+  redirect_on_login: / # Provide either a route name, or a URL
+
+## Define groups below
+groups:
+  ROLE_MEMBER:
+    redirect_on_register: homepage
+    # contenttype: members
+    # allow_profile_edit: true #if you enable this, make sure to specify the edit template
+    # profile_edit_template: 'edit_profile.twig'
