@@ -43,17 +43,13 @@ class RegisterFrontendUsersController extends ExtensionController implements Ext
     /** @var Request */
     private $request;
 
-    /** @var ExtensionRegistry */
-    private $registry;
-
     public function __construct(
         EntityManagerInterface $em,
         UserPasswordEncoderInterface $passwordEncoder,
         CsrfTokenManagerInterface $csrfTokenManager,
         Config $config,
-        RequestStack $requestStack,
-        ExtensionRegistry $registry
-    ) {
+        RequestStack $requestStack)
+    {
         parent::__construct($config);
 
         $this->em = $em;

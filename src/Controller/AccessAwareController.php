@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Bolt\UsersExtension\Controller;
 
-use Bolt\Configuration\Config;
 use Bolt\Configuration\Content\ContentType;
 use Bolt\Extension\ExtensionController;
-use Bolt\Extension\ExtensionRegistry;
 use Bolt\UsersExtension\ExtensionConfigInterface;
 use Bolt\UsersExtension\ExtensionConfigTrait;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -16,16 +14,6 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 class AccessAwareController extends ExtensionController implements ExtensionConfigInterface
 {
     use ExtensionConfigTrait;
-
-    /** @var ExtensionRegistry */
-    protected $registry;
-
-    public function __construct(Config $config, ExtensionRegistry $registry)
-    {
-        parent::__construct($config);
-
-        $this->registry = $registry;
-    }
 
     public function applyAllowForGroupsGuard(ContentType $contentType): void
     {
