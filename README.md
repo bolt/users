@@ -130,6 +130,14 @@ groups:
     contenttype: members # Link the 'members' ContentType to the 'members' group.
 ```
 
+Finally, add this to `config/routes.yaml`:
+
+```yaml
+users_extension_controllers:
+    resource: '../../vendor/bolt/users/src/'
+    type: annotation
+```
+
 Now, users belonging to the `members` group will be able to access their profile
 at `/profile`. You can customize the appearance of this page by customizing the
 record template for the members ContentType.
