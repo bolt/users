@@ -4,14 +4,19 @@ declare(strict_types=1);
 
 namespace Bolt\UsersExtension\Twig;
 
+use Bolt\Extension\ExtensionRegistry;
+use Bolt\UsersExtension\ExtensionConfigInterface;
+use Bolt\UsersExtension\ExtensionConfigTrait;
 use Bolt\UsersExtension\Utils\ExtensionUtils;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-class LoginFormExtension extends AbstractExtension
+class LoginFormExtension extends AbstractExtension implements ExtensionConfigInterface
 {
+    use ExtensionConfigTrait;
+
     /** @var UrlGeneratorInterface */
     private $router;
 
@@ -21,11 +26,15 @@ class LoginFormExtension extends AbstractExtension
     /** @var ExtensionUtils */
     private $utils;
 
-    public function __construct(UrlGeneratorInterface $router, CsrfTokenManagerInterface $csrfTokenManager, ExtensionUtils $utils)
+    /** @var ExtensionRegistry */
+    private $registry;
+
+    public function __construct(UrlGeneratorInterface $router, CsrfTokenManagerInterface $csrfTokenManager, ExtensionUtils $utils, ExtensionRegistry $registry)
     {
         $this->router = $router;
         $this->csrfTokenManager = $csrfTokenManager;
         $this->utils = $utils;
+        $this->registry = $registry;
     }
 
     /**
@@ -102,11 +111,10 @@ class LoginFormExtension extends AbstractExtension
         return sprintf('<input type="hidden" name="_csrf_token" value="%s">', $token);
     }
 
-    public function getRedirectField(?string $pathOrUrl = null): string
+    public function getRedirectField(string $group = '', string $pathOrUrl = ''): string
     {
         if ($pathOrUrl === null) {
-            // @todo: Get the path from the config
-            $pathOrUrl = '/';
+            $pathOrUrl = $this->getExtension()->getExtConfig('redirect_on_login', $group, '/');
         }
 
         if ($this->utils->isRoute($pathOrUrl)) {

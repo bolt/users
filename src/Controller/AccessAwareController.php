@@ -13,7 +13,7 @@ use Bolt\UsersExtension\ExtensionConfigTrait;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-abstract class AccessAwareController extends ExtensionController implements ExtensionConfigInterface
+class AccessAwareController extends ExtensionController implements ExtensionConfigInterface
 {
     use ExtensionConfigTrait;
 
