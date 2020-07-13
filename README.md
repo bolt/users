@@ -67,7 +67,7 @@ entries:
     allow_for_groups: [ 'ROLE_MEMBER', 'ROLE_ADMIN' ]
 ```
 
-Note: The `allow_for_groups` option is used to limit access to ContentType (listing
+Note: The `allow_for_groups` option is used to limit access to the ContentType (listing
 as well as record pages). It will only allow users who are logged in and have the
 correct permission to access those pages. Not even admins will be allowed to view
 those pages, hence why we add the `ROLE_ADMIN` group to ensure admins have view rights
@@ -79,12 +79,12 @@ The extension allows you to include a registration form on any twig template.
 To add a registration form, just add the following to your twig file:
 
 ```twig
-    {{ registration_form(group='ROLE_MEMBER') }}
+    {{ registration_form(group='ROLE_MEMBER'f) }}
 ```
 
 This line below will render a registration form with username, password and email
 fields for the user to fill in. You must always specify the user group to which
-this form applies (in this case, members). Users who register with that group will
+this form applies (in this case, `ROLE_MEMBER`). Users who register with that group will
 automatically receive access rights to ContentTypes limited to that group.
 
 Currently, the `registration_form` function accepts the following options:
@@ -112,7 +112,7 @@ Sometimes, you want to do more with users than simply restrict access to certain
 The extension allows you to define custom user fields by linking a ContentType to a
 user group.
 
-For example, to define a date of birth to our members group, we would do the following:
+For example, to define a date of birth to our 'ROLE_MEMBER' group, we would do the following:
 
 1. Define a `members` ContentType in `config/contenttypes.ymal` that will be used to store information about users.
 
@@ -135,10 +135,10 @@ groups:
     redirect_on_register: homepage
     redirect_on_login: /
     initial_status: enabled
-    contenttype: members # Link the 'members' ContentType to the 'members' group.
+    contenttype: members # Link the 'members' ContentType to the 'ROLE_MEMBER' group.
 ```
 
-Now, users belonging to the `members` group will be able to access their profile
+Now, users belonging to the `ROLE_MEMBER` group will be able to access their profile
 at `/profile`. You can customize the appearance of this page by customizing the
 record template for the members ContentType.
 
