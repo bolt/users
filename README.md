@@ -79,7 +79,7 @@ The extension allows you to include a registration form on any twig template.
 To add a registration form, just add the following to your twig file:
 
 ```twig
-    {{ registration_form(group='ROLE_MEMBER'f) }}
+    {{ registration_form(group='ROLE_MEMBER') }}
 ```
 
 This line below will render a registration form with username, password and email
