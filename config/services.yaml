@@ -1,0 +1,13 @@
+services:
+  Bolt\UsersExtension\Exclude\ProtectedListingController:
+    decorates: Bolt\Controller\Frontend\ListingController
+    arguments: ['@.inner']
+    tags: ['controller.service_arguments']
+
+  Bolt\UsersExtension\Exclude\ProtectedDetailController:
+    decorates: Bolt\Controller\Frontend\DetailController
+    arguments: ['@.inner']
+    tags: ['controller.service_arguments']
+
+  Bolt\UsersExtension\Controller\AccessAwareController:
+    tags: ['controller.service_arguments']

@@ -1,0 +1,3 @@
+users_extension_controllers:
+  resource: '../vendor/bolt/users/src/'
+  type: annotation

@@ -10,35 +10,10 @@ Here is a list of things that the extension allows:
 
 ## Installation
 
-To install this extension, simply run the following in your root folder:
+To install this extension, simply run the following terminal command from your root folder:
 
 ```
 composer require bolt/users
-```
-
-Then, add the following to your `config/services.yaml` file:
-
-```yaml
-    Bolt\UsersExtension\Exclude\ProtectedListingController:
-        decorates: Bolt\Controller\Frontend\ListingController
-        arguments: ['@.inner']
-        tags: ['controller.service_arguments']
-
-    Bolt\UsersExtension\Exclude\ProtectedDetailController:
-        decorates: Bolt\Controller\Frontend\DetailController
-        arguments: ['@.inner']
-        tags: ['controller.service_arguments']
-
-    Bolt\UsersExtension\Controller\AccessAwareController:
-        tags: ['controller.service_arguments']
-```
-
-Finally, add this to `config/routes.yaml`:
-
-```yaml
-users_extension_controllers:
-    resource: '../../vendor/bolt/users/src/'
-    type: annotation
 ```
 
 ## Basic usage
