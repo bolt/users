@@ -5,7 +5,7 @@ The Bolt users extension allows you to add front-end users to your website.
 Here is a list of things that the extension allows:
 
 - Define groups of users, allow them to register and login
-- Limit ContenTypes (pages) to be visible only by users belonging to a certain group
+- Limit ContentTypes (pages) to be visible only by users belonging to a certain group
 - Define user fields and allow them to edit their own profile
 
 ## Installation
