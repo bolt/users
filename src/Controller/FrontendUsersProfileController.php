@@ -117,11 +117,12 @@ class FrontendUsersProfileController extends AccessAwareController
         ]);
 
         if (empty($content)) {
-            $content = new Content();
+            $content = new Content($contentType);
             $content->setAuthor($user);
             $content->setPublishedAt(new \DateTime());
             $content->setStatus(Statuses::PUBLISHED);
-            $content->setContentType((string) $contentType);
+            $contentTypeName = strtolower($contentType->get('name', $contentType->get('slug')));
+            $content->setContentType($contentTypeName);
             $this->contentFillListener->fillContent($content);
         } elseif (is_iterable($content)) {
             $content = end($content);
