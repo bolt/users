@@ -34,6 +34,7 @@ class RegistrationFormExtension extends AbstractExtension
 
         return [
             new TwigFunction('registration_form', [$this, 'getRegistrationForm'], $safe),
+            new TwigFunction('registration_form_displayname', [$this, 'getDisplayNameField'], $safe),
             new TwigFunction('registration_form_username', [$this, 'getUsernameField'], $safe),
             new TwigFunction('registration_form_password', [$this, 'getPasswordField'], $safe),
             new TwigFunction('registration_form_email', [$this, 'getEmailField'], $safe),
@@ -45,6 +46,7 @@ class RegistrationFormExtension extends AbstractExtension
 
     public function getRegistrationForm(string $group, bool $withLabels = true, array $labels = []): string
     {
+        $displayname = $this->getDisplayNameField($withLabels, $labels);
         $username = $this->getUsernameField($withLabels, $labels);
         $password = $this->getPasswordField($withLabels, $labels);
         $email = $this->getEmailField($withLabels, $labels);
@@ -53,7 +55,17 @@ class RegistrationFormExtension extends AbstractExtension
         $submit = $this->getSubmitButton($labels);
         $postUrl = $this->router->generate('extension_edit_frontend_user');
 
-        return sprintf("<form method='post' action='%s'>%s %s %s %s %s %s</form>", $postUrl, $username, $password, $email, $group, $submit, $csrf);
+        return sprintf("<form method='post' action='%s'>%s %s %s %s %s %s %s</form>", $postUrl, $displayname, $username, $password, $email, $group, $submit, $csrf);
+    }
+
+    public function getDisplayNameField(bool $withLabel, array $labels): string
+    {
+        $text = in_array('displayname', $labels, true) ? $labels['displayname'] : 'Display Name';
+        $label = $withLabel ? sprintf('<label for="displayname">%s</label>', $text) : '';
+
+        $input = '<input type="text" id="displayname" name="displayname">';
+
+        return $label . $input;
     }
 
     public function getUsernameField(bool $withLabel, array $labels): string
