@@ -73,7 +73,7 @@ class RegisterFrontendUsersController extends ExtensionController implements Ext
             return $this->redirect($referer);
         }
 
-        $user = UserRepository::factory('', $this->request->get('username'), $this->request->get('email'));
+        $user = UserRepository::factory($this->request->get('displayname'), $this->request->get('username'), $this->request->get('email'));
 
         $user->setDisplayName($this->request->get('displayname', $user->getUsername()));
 
