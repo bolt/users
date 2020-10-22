@@ -95,7 +95,6 @@ class FrontendUsersProfileController extends AccessAwareController implements Ba
 
         $content = $this->getUserRecord($contentType);
 
-        // buggy edit function
         if ($request->getMethod() === 'POST') {
             $this->contentEditController->save($content);
 
