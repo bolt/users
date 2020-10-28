@@ -69,9 +69,15 @@ class FrontendUsersProfileController extends AccessAwareController implements Ba
         if ($user instanceof User && $this->isGranted('ROLE_ADMIN')) {
             return $this->redirectToRoute('bolt_user_edit', ['id' => $user->getId()]);
         }
-
+        
         if ($user !== null /* Ensure there is an active user logged on*/ ) {
             $contentTypeSlug = $this->getExtension()->getExtConfig('contenttype', $user->getRoles()[0]);
+            
+            /** @var ContentType $contentType */
+            $contentType = $this->getBoltConfig()->getContentType($contentTypeSlug);
+            $this->applyAllowForGroupsGuard($contentType);
+
+            return $this->twigAwareController->renderSingle($this->getUserRecord($contentType));
         }
         else {
             // If session was invalidated or ended, redirect user as needed when they try to access profile
@@ -79,12 +85,6 @@ class FrontendUsersProfileController extends AccessAwareController implements Ba
             $redirectRoute = $this->getExtension()->getExtConfig('redirect_on_session_null');
             return $this->redirect($redirectRoute);
         }
-        
-        /** @var ContentType $contentType */
-        $contentType = $this->getBoltConfig()->getContentType($contentTypeSlug);
-        $this->applyAllowForGroupsGuard($contentType);
-
-        return $this->twigAwareController->renderSingle($this->getUserRecord($contentType));
     }
 
     /**
