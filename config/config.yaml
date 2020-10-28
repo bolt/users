@@ -7,6 +7,7 @@ default:
   redirect_on_register: / # Provide either a route name, or a URL
   initial_status: enabled # email_confirmation, admin_confirmation
   redirect_on_login: / # Provide either a route name, or a URL
+  redirect_on_session_null: / # Redirection route if no valid user session
 
 ## Define groups below
 groups:
