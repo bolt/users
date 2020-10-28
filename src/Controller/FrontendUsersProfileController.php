@@ -70,7 +70,15 @@ class FrontendUsersProfileController extends AccessAwareController implements Ba
             return $this->redirectToRoute('bolt_user_edit', ['id' => $user->getId()]);
         }
 
-        $contentTypeSlug = $this->getExtension()->getExtConfig('contenttype', $user->getRoles()[0]);
+        if ($user !== null /* Ensure there is an active user logged on*/ ) {
+            $contentTypeSlug = $this->getExtension()->getExtConfig('contenttype', $user->getRoles()[0]);
+        }
+        else {
+            // If session was invalidated or ended, redirect user as needed when they try to access profile
+            // For instance, redirect to login page to prompt re-authentication
+            $redirectRoute = $this->getExtension()->getExtConfig('redirect_on_session_null');
+            return $this->redirect($redirectRoute);
+        }
         
         /** @var ContentType $contentType */
         $contentType = $this->getBoltConfig()->getContentType($contentTypeSlug);
