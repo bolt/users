@@ -90,33 +90,43 @@ class FrontendUsersProfileController extends AccessAwareController implements Ba
     /**
      * @Route("/profile/edit", methods={"GET", "POST"}, name="extension_frontend_user_edit")
      */
-    public function edit(Request $request): Response
+    public function edit(ContentType $contentType, Request $request): Response
     {
-        $this->applyIsAuthenticatedGuard();
+        $user = $this->getUser();
+        
+        if ($user !== null /* Ensure there is an active user logged on*/ ) {
+            
+            $this->applyIsAuthenticatedGuard();
 
-        $contentTypeSlug = $this->getExtension()->getExtConfig('contenttype', $this->getUser()->getRoles()[0]);
+            $contentTypeSlug = $this->getExtension()->getExtConfig('contenttype', $this->getUser()->getRoles()[0]);
 
-        /** @var ContentType $contentType */
-        $contentType = $this->getBoltConfig()->getContentType($contentTypeSlug);
-        $this->applyAllowForGroupsGuard($contentType);
-        $this->applyEditProfileGuard();
+            /** @var ContentType $contentType */
+            $contentType = $this->getBoltConfig()->getContentType($contentTypeSlug);
+            $this->applyAllowForGroupsGuard($contentType);
+            $this->applyEditProfileGuard();
 
-        $content = $this->getUserRecord($contentType);
+            $content = $this->getUserRecord($contentType);
 
-        if ($request->getMethod() === 'POST') {
-            $this->contentEditController->save($content);
+            if ($request->getMethod() === 'POST') {
+                $this->contentEditController->save($content);
+                return $this->redirectToRoute('extension_frontend_user_profile');
+            }
 
-            return $this->redirectToRoute('extension_frontend_user_profile');
+            $templates = $this->templateChooser->forProfileEdit($this->getUser()->getRoles()[0]);
+
+            $parameters = [
+                'record' => $content,
+                $content->getContentTypeSingularSlug() => $content,
+            ];
+
+            return $this->twigAwareController->renderTemplate($templates, $parameters);
         }
-
-        $templates = $this->templateChooser->forProfileEdit($this->getUser()->getRoles()[0]);
-
-        $parameters = [
-            'record' => $content,
-            $content->getContentTypeSingularSlug() => $content,
-        ];
-
-        return $this->twigAwareController->renderTemplate($templates, $parameters);
+        else {
+            // If session was invalidated or ended, redirect user as needed when they try to access profile
+            // For instance, redirect to login page to prompt re-authentication
+            $redirectRoute = $this->getExtension()->getExtConfig('redirect_on_session_null');
+            return $this->redirect($redirectRoute);
+        }
     }
 
     private function getUserRecord(ContentType $contentType): Content
