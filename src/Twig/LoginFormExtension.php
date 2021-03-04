@@ -64,7 +64,7 @@ class LoginFormExtension extends AbstractExtension implements ExtensionConfigInt
 
     public function getUsernameField(bool $withLabel, array $labels): string
     {
-        $text = in_array('username', $labels, true) ? $labels['username'] : 'Username';
+        $text = array_key_exists('username', $labels) ? $labels['username'] : 'Username';
         $label = $withLabel ? sprintf('<label for="username">%s</label>', $text) : '';
 
         $input = '<input type="text" id="username" name="username">';
@@ -74,7 +74,7 @@ class LoginFormExtension extends AbstractExtension implements ExtensionConfigInt
 
     public function getPasswordField(bool $withLabel, array $labels): string
     {
-        $text = in_array('password', $labels, true) ? $labels['password'] : 'Password';
+        $text = array_key_exists('password', $labels) ? $labels['password'] : 'Password';
         $label = $withLabel ? sprintf('<label for="password">%s</label>', $text) : '';
 
         $input = '<input type="password" id="password" name="password">';
@@ -84,7 +84,7 @@ class LoginFormExtension extends AbstractExtension implements ExtensionConfigInt
 
     public function getEmailField(bool $withLabel, array $labels): string
     {
-        $text = in_array('email', $labels, true) ? $labels['email'] : 'Email';
+        $text = array_key_exists('email', $labels) ? $labels['email'] : 'Email';
         $label = $withLabel ? sprintf('<label for="email">%s</label>', $text) : '';
 
         $input = '<input type="email" id="email" name="email">';
@@ -94,7 +94,7 @@ class LoginFormExtension extends AbstractExtension implements ExtensionConfigInt
 
     public function getSubmitButton(array $labels = []): string
     {
-        $text = in_array('submit', $labels, true) ? $labels['submit'] : 'Submit';
+        $text = array_key_exists('submit', $labels) ? $labels['submit'] : 'Submit';
 
         return sprintf('<input type="submit" value="%s">', $text);
     }
