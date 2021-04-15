@@ -171,12 +171,17 @@ class FrontendUsersProfileController extends AccessAwareController implements Ba
         $content->setContentType($contentTypeName);
         $content->setFieldValue('displayName', $user->getDisplayName()); // Hidden field for record title
         $content->setFieldValue('username', $user->getUsername()); // Hidden field with copy of username
+        $content->setFieldValue('slug', $user->getUsername()); // Make slugs unique to users
         
         // Initialise ALL extra fields as defined in the contenttype with empty strings.
         // This ensures they are displayed on the /profile/edit route without backend intervention
-        $content->setFieldValue('dob', '');
+        foreach($contentType->get('fields') as $name => $field){
 
-        $content->setFieldValue('slug', $user->getUsername()); // Make slugs unique to users
+            if(!in_array($name, ['displayName','username','slug'])) {
+                $content->setFieldValue($name, '');
+            }
+        }
+        
         $this->contentFillListener->fillContent($content);
 
         // Persist in DB
