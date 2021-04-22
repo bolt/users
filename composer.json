@@ -1,6 +1,6 @@
 {
   "name": "bolt/users",
-  "description": "Bolt 4 users extesion",
+  "description": "Bolt 4 Users Extension",
   "type": "bolt-extension",
   "license": "MIT",
   "authors": [
