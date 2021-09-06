@@ -65,7 +65,7 @@ class LoginFormExtension extends AbstractExtension implements ExtensionConfigInt
 
     public function getUsernameField(bool $withLabel, array $labels): string
     {
-        $name = Version::compare('4', '=') ? 'username' : 'login[username]';
+        $name = $this->useOldLoginForm() ? 'username' : 'login[username]';
         $text = array_key_exists('username', $labels) ? $labels['username'] : 'Username';
         $label = $withLabel ? sprintf('<label for="%s">%s</label>', $name, $text) : '';
 
@@ -76,7 +76,7 @@ class LoginFormExtension extends AbstractExtension implements ExtensionConfigInt
 
     public function getPasswordField(bool $withLabel, array $labels): string
     {
-        $name = Version::compare('4', '=') ? 'password' : 'login[password]';
+        $name = $this->useOldLoginForm() ? 'password' : 'login[password]';
         $text = array_key_exists('password', $labels) ? $labels['password'] : 'Password';
         $label = $withLabel ? sprintf('<label for="%s">%s</label>', $name, $text) : '';
 
@@ -104,8 +104,8 @@ class LoginFormExtension extends AbstractExtension implements ExtensionConfigInt
 
     public function getCsrfField(): string
     {
-        $name = Version::compare('4.2.3', '>=') ? '_csrf_token' : 'login[_token]';
-        $token = $this->csrfTokenManager->getToken('login_csrf_token');
+        $name = $this->useOldLoginForm() ? '_csrf_token' : 'login[_token]';
+        $token = $this->csrfTokenManager->getToken($this->useOldLoginForm() ? 'authenticate' : 'login_csrf_token');
 
         return sprintf('<input type="hidden" name="%s" value="%s">', $name, $token);
     }
@@ -121,5 +121,9 @@ class LoginFormExtension extends AbstractExtension implements ExtensionConfigInt
         }
 
         return sprintf('<input type="hidden" name="_target_path" value="%s">', $pathOrUrl);
+    }
+
+    private function useOldLoginForm(): bool{
+        return Version::compare('4.2.2', '>=');
     }
 }
