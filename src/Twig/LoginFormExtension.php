@@ -7,6 +7,7 @@ namespace Bolt\UsersExtension\Twig;
 use Bolt\UsersExtension\ExtensionConfigInterface;
 use Bolt\UsersExtension\ExtensionConfigTrait;
 use Bolt\UsersExtension\Utils\ExtensionUtils;
+use Bolt\Version;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Twig\Extension\AbstractExtension;
@@ -64,20 +65,22 @@ class LoginFormExtension extends AbstractExtension implements ExtensionConfigInt
 
     public function getUsernameField(bool $withLabel, array $labels): string
     {
+        $name = Version::compare('4', '=') ? 'username' : 'login[username]';
         $text = array_key_exists('username', $labels) ? $labels['username'] : 'Username';
-        $label = $withLabel ? sprintf('<label for="username">%s</label>', $text) : '';
+        $label = $withLabel ? sprintf('<label for="%s">%s</label>', $name, $text) : '';
 
-        $input = '<input type="text" id="username" name="username">';
+        $input = sprintf('<input type="text" id="username" name="%s">', $name);
 
         return $label . $input;
     }
 
     public function getPasswordField(bool $withLabel, array $labels): string
     {
+        $name = Version::compare('4', '=') ? 'password' : 'login[password]';
         $text = array_key_exists('password', $labels) ? $labels['password'] : 'Password';
-        $label = $withLabel ? sprintf('<label for="password">%s</label>', $text) : '';
+        $label = $withLabel ? sprintf('<label for="%s">%s</label>', $name, $text) : '';
 
-        $input = '<input type="password" id="password" name="password">';
+        $input = sprintf('<input type="password" id="password" name="%s">', $name);
 
         return $label . $input;
     }
@@ -101,9 +104,10 @@ class LoginFormExtension extends AbstractExtension implements ExtensionConfigInt
 
     public function getCsrfField(): string
     {
-        $token = $this->csrfTokenManager->getToken('authenticate');
+        $name = Version::compare('4.2.3', '>=') ? '_csrf_token' : 'login[_token]';
+        $token = $this->csrfTokenManager->getToken('login_csrf_token');
 
-        return sprintf('<input type="hidden" name="_csrf_token" value="%s">', $token);
+        return sprintf('<input type="hidden" name="%s" value="%s">', $name, $token);
     }
 
     public function getRedirectField(string $group = '', string $pathOrUrl = ''): string
