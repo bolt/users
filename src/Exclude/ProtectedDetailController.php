@@ -42,7 +42,7 @@ class ProtectedDetailController extends AccessAwareController implements DetailC
      *
      * @param string|int $slugOrId
      */
-    public function record($slugOrId, ?string $contentTypeSlug = null, bool $requirePublished = true): Response
+    public function record($slugOrId, ?string $contentTypeSlug = null, bool $requirePublished = true, string $_locale = null): Response
     {
         $contentType = ContentType::factory($contentTypeSlug, $this->config->get('contenttypes'));
         $this->applyAllowForGroupsGuard($contentType);
@@ -50,7 +50,7 @@ class ProtectedDetailController extends AccessAwareController implements DetailC
         return $this->detailController->record($slugOrId, $contentTypeSlug, $requirePublished);
     }
 
-    public function contentByFieldValue(string $contentTypeSlug, string $field, string $value): Response
+    public function contentByFieldValue(string $contentTypeSlug, string $field, string $value, string $_locale = null): Response
     {
         $contentType = ContentType::factory($contentTypeSlug, $this->config->get('contenttypes'));
         $this->applyAllowForGroupsGuard($contentType);
