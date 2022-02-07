@@ -119,7 +119,7 @@ class FrontendUsersProfileController extends AccessAwareController implements Ba
                 $content->getContentTypeSingularSlug() => $content,
             ];
 
-            return $this->twigAwareController->renderTemplate($templates, $parameters);
+            return $this->twigAwareController->render($templates, $parameters);
         }
         else {
             // If session was invalidated or ended, redirect user as needed when they try to access profile
