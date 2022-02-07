@@ -146,7 +146,7 @@ can include:
             <textarea name="fields[{{ field.name }}]">{{ field.parsedValue }}</textarea>
         {% elseif field.type === 'checkbox' %}
             <input type="checkbox" name="fields[{{ field.name}}]" value="{{ field.parsedValue }}" />
-        {% else if field.type === 'date' %}
+        {% elseif field.type === 'date' %}
             <input type="date" name="fields[{{ field.name }}]" value="{{ field.parsedValue }}" />
         {% endif %}
     {% endfor %}
