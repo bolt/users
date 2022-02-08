@@ -77,7 +77,7 @@ class FrontendUsersProfileController extends AccessAwareController implements Ba
             $contentType = $this->getBoltConfig()->getContentType($contentTypeSlug);
             $this->applyAllowForGroupsGuard($contentType);
 
-            return $this->twigAwareController->renderSingle($this->getUserRecord($contentType));
+            return $this->twigAwareController->renderSingle($this->getUserRecord($contentType), false);
         }
         else {
             // If session was invalidated or ended, redirect user as needed when they try to access profile
@@ -119,7 +119,7 @@ class FrontendUsersProfileController extends AccessAwareController implements Ba
                 $content->getContentTypeSingularSlug() => $content,
             ];
 
-            return $this->twigAwareController->renderTemplate($templates, $parameters);
+            return $this->twigAwareController->render($templates, $parameters);
         }
         else {
             // If session was invalidated or ended, redirect user as needed when they try to access profile
