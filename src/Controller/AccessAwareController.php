@@ -44,8 +44,28 @@ class AccessAwareController extends ExtensionController implements ExtensionConf
 
     public function applyEditProfileGuard(): void
     {
-        if (! $this->getExtension()->getExtConfig('allow_profile_edit', $this->getUser()->getRoles()[0], false)) {
+        if (! $this->getExtension()->getExtConfig('allow_profile_edit', $this->findGrantedUserRole(), false)) {
             throw new AccessDeniedHttpException();
         }
     }
+
+    /**
+     * Walks through defined groups and returns first one matching users' roles.
+     * Supports role hierarchies.
+     *
+     * Eg: if ROLE_ADMIN inherits from ROLE_MEMBER, groups contains ROLE_MEMBER and user's role is ROLE_ADMIN, then ROLE_MEMBER is returned.
+     */
+    public function findGrantedUserRole(): string
+    {
+        $groups = $this->getExtension()->getConfig()->get('groups', []);
+
+        foreach ($groups as $role => $roleConfig)
+            if ($this->isGranted(new Expression(sprintf("'%s' in role_names", $role)))) {
+                return $role;
+            }
+
+        // no user role was found in groups
+        throw new AccessDeniedHttpException();
+    }
+
 }

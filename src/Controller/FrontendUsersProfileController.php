@@ -17,6 +17,7 @@ use Bolt\Repository\ContentRepository;
 use Bolt\UsersExtension\ExtensionConfigTrait;
 use Bolt\UsersExtension\Utils\ExtensionTemplateChooser;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -69,10 +70,10 @@ class FrontendUsersProfileController extends AccessAwareController implements Ba
         if ($user instanceof User && $this->isGranted('ROLE_ADMIN')) {
             return $this->redirectToRoute('bolt_user_edit', ['id' => $user->getId()]);
         }
-        
+
         if ($user !== null /* Ensure there is an active user logged on*/ ) {
-            $contentTypeSlug = $this->getExtension()->getExtConfig('contenttype', $user->getRoles()[0]);
-            
+            $contentTypeSlug = $this->findContentTypeSlug();
+
             /** @var ContentType $contentType */
             $contentType = $this->getBoltConfig()->getContentType($contentTypeSlug);
             $this->applyAllowForGroupsGuard($contentType);
@@ -93,12 +94,12 @@ class FrontendUsersProfileController extends AccessAwareController implements Ba
     public function edit(ContentType $contentType, Request $request): Response
     {
         $user = $this->getUser();
-        
+
         if ($user !== null /* Ensure there is an active user logged on*/ ) {
-            
+
             $this->applyIsAuthenticatedGuard();
 
-            $contentTypeSlug = $this->getExtension()->getExtConfig('contenttype', $this->getUser()->getRoles()[0]);
+            $contentTypeSlug = $this->findContentTypeSlug();
 
             /** @var ContentType $contentType */
             $contentType = $this->getBoltConfig()->getContentType($contentTypeSlug);
@@ -112,7 +113,7 @@ class FrontendUsersProfileController extends AccessAwareController implements Ba
                 return $this->redirectToRoute('extension_frontend_user_profile');
             }
 
-            $templates = $this->templateChooser->forProfileEdit($this->getUser()->getRoles()[0]);
+            $templates = $this->templateChooser->forProfileEdit($this->findGrantedUserRole());
 
             $parameters = [
                 'record' => $content,
@@ -133,24 +134,24 @@ class FrontendUsersProfileController extends AccessAwareController implements Ba
     {
         /** @var User $user */
         $user = $this->getUser();
-        
+
         // Access user record, if available
-        $contentTypeSlug = $this->getExtension()->getExtConfig('contenttype', $user->getRoles()[0]);
+        $contentTypeSlug = $this->findContentTypeSlug();
         $contentType = $this->getBoltConfig()->getContentType($contentTypeSlug);
 
         $content = $this->contentRepository->findBy([
             'author' => $user,
             'contentType' => $contentType->getSlug(),
         ]);
-        
+
         // If user record unavailable, create it
         if (empty($content)) {
             return $this->new($contentType);
-        } 
+        }
         elseif (is_iterable($content)) {
             $content = end($content);
         }
-        
+
         return $content;
     }
 
@@ -159,9 +160,9 @@ class FrontendUsersProfileController extends AccessAwareController implements Ba
     {
         /** @var User $user */
         $user = $this->getUser();
-        $contentTypeSlug = $this->getExtension()->getExtConfig('contenttype', $user->getRoles()[0]);
+        $contentTypeSlug = $this->findContentTypeSlug();
         $contentType = $this->getBoltConfig()->getContentType($contentTypeSlug);
-        
+
         $content = new Content($contentType);
         $content->setAuthor($user);
         $content->setCreatedAt(new \DateTime());
@@ -172,7 +173,7 @@ class FrontendUsersProfileController extends AccessAwareController implements Ba
         $content->setFieldValue('displayName', $user->getDisplayName()); // Hidden field for record title
         $content->setFieldValue('username', $user->getUsername()); // Hidden field with copy of username
         $content->setFieldValue('slug', $user->getUsername()); // Make slugs unique to users
-        
+
         // Initialise ALL extra fields as defined in the contenttype with empty strings.
         // This ensures they are displayed on the /profile/edit route without backend intervention
         foreach($contentType->get('fields') as $name => $field){
@@ -181,7 +182,7 @@ class FrontendUsersProfileController extends AccessAwareController implements Ba
                 $content->setFieldValue($name, '');
             }
         }
-        
+
         $this->contentFillListener->fillContent($content);
 
         // Persist in DB
@@ -194,6 +195,18 @@ class FrontendUsersProfileController extends AccessAwareController implements Ba
     {
         $this->em->persist($content);
         $this->em->flush();
+    }
+
+    private function findContentTypeSlug(): ?string
+    {
+        $role = $this->findGrantedUserRole();
+
+        $contentTypeSlug = $this->getExtension()->getExtConfig('contenttype', $role);
+
+        if ($contentTypeSlug === null)
+            throw new \Exception("Must define a contenttype.");
+
+        return $contentTypeSlug;
     }
 
 }
