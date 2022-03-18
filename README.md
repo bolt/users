@@ -18,7 +18,7 @@ composer require bolt/users
 
 ## Basic usage
 
-To limit a a ContentType to a specific group of users, say `ROLE_MEMBER`, do the following:
+To limit a ContentType to a specific group of users, say `ROLE_MEMBER`, do the following:
 
 1. Define your user group in `config/extensions/bolt-usersextension.yaml`:
 
