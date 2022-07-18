@@ -48,6 +48,7 @@ class LoginFormExtension extends AbstractExtension implements ExtensionConfigInt
             new TwigFunction('login_form_password', [$this, 'getPasswordField'], $safe),
             new TwigFunction('login_form_csrf', [$this, 'getCsrfField'], $safe),
             new TwigFunction('login_form_submit', [$this, 'getSubmitButton'], $safe),
+            new TwigFunction('login_redirect_url', [$this, 'getRedirectField'], $safe),
         ];
     }
 

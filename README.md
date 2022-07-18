@@ -183,9 +183,9 @@ For logging in:
 | ------------- |:-------------:|
 | `login_form_username`      | Renders the username field |
 | `login_form_password`      | Renders the password field |
-| `registration_form_csrf`          | Renders a hidden field that contains a CSRF token. |
-| `registration_form_submit`        | Renders the submit button |
-
+| `login_form_csrf`          | Renders a hidden field that contains a CSRF token. |
+| `login_form_submit`        | Renders the submit button |
+| `login_redirect_url`       | redirect to "/" after submit |
 
 Each field function above takes an optional `withlabel` argument and the `labels` argument
 that is also used by `registration_form`.
